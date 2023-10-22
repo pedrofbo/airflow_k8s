@@ -1,3 +1,6 @@
+"""
+DAG that does something... :)
+"""
 from copy import deepcopy
 from datetime import datetime
 
@@ -7,7 +10,8 @@ from airflow.decorators import dag, task
 @dag(
     schedule=None,
     start_date=datetime(2023, 10, 21),
-    catchup=False
+    catchup=False,
+    doc_md=__doc__
 )
 def something():
     @task

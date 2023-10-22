@@ -1,3 +1,6 @@
+"""
+DAG that does something... with pandas :)
+"""
 from datetime import datetime
 
 import pandas as pd
@@ -7,7 +10,13 @@ from airflow.decorators import dag, task
 @dag(
     schedule=None,
     start_date=datetime(2023, 10, 21),
-    catchup=False
+    catchup=False,
+    default_args={
+        "KubernetesExecutor": {
+            "image": "pedrofbo/airflow_k8s_worker:1"
+        }
+    },
+    doc_md=__doc__
 )
 def something_with_pandas():
     @task
