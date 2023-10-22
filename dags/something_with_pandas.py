@@ -1,6 +1,6 @@
-from copy import deepcopy
 from datetime import datetime
 
+import pandas as pd
 from airflow.decorators import dag, task
 
 
@@ -9,7 +9,7 @@ from airflow.decorators import dag, task
     start_date=datetime(2023, 10, 21),
     catchup=False
 )
-def something():
+def something_with_pandas():
     @task
     def extract():
         data = [
@@ -21,21 +21,22 @@ def something():
 
     @task
     def transform(data: list[dict]):
-        new_data = deepcopy(data)
-        new_data.append({"a": 4, "b": "d", "c": True})
-        for entry in new_data:
-            entry["d"] = entry["a"]**2 + 10 * entry["c"]
+        df = pd.DataFrame(data)
+        df = pd.concat([
+            df,
+            pd.DataFrame([{"a": 4, "b": "d", "c": True}])
+        ])
+        df["d"] = df["a"]**2 + 10 * df["c"]
 
-        return new_data
+        return df
 
     @task
-    def load(data: list[dict]):
-        for entry in data:
-            print(entry)
+    def load(data: pd.DataFrame):
+        print(f"\n{data}")
 
     data = extract()
     transformed_data = transform(data)
     load(transformed_data)
 
 
-something()
+something_with_pandas()
