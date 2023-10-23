@@ -12,8 +12,10 @@ from airflow.decorators import dag, task
     start_date=datetime(2023, 10, 21),
     catchup=False,
     default_args={
-        "KubernetesExecutor": {
-            "image": "pedrofbo/airflow_k8s_worker:1"
+        "executor_config": {
+            "KubernetesExecutor": {
+                "image": "pedrofbo/airflow_k8s_worker:1"
+            }
         }
     },
     doc_md=__doc__
